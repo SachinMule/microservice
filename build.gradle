@@ -1,0 +1,60 @@
+apply plugin: 'java'
+apply plugin: 'idea'
+apply plugin: 'org.springframework.boot'
+
+jar {
+    baseName = 'microservice'
+    version =  '0.1.0'
+}
+
+group = "bluejeans"
+
+buildscript {
+	repositories{
+		mavenCentral();
+		maven{ url "https://plugins.gradle.org/m2/" }
+	}
+	dependencies {
+        classpath("org.springframework.boot:spring-boot-gradle-plugin:${springVersion}")
+	}
+}
+repositories {
+		mavenLocal()
+		maven { url "http://${nexusHost}/nexus/content/groups/public" }
+	    maven { url "http://${nexusHost}/nexus/content/repositories/primetime-seam" }
+	    maven { url "http://${nexusHost}/nexus/content/repositories/com.bluejeans.primetime" }
+		jcenter()
+		maven { url "https://plugins.gradle.org/m2/" }
+		maven { url "http://jcenter.bintray.com" }
+	    mavenCentral()
+}
+
+sourceCompatibility = 1.8
+targetCompatibility = 1.8
+
+configurations.all {
+    exclude group: 'org.springframework.boot', module: 'spring-boot-starter-tomcat'
+    exclude group: 'org.springframework.boot', module: 'spring-boot-starter-logging'
+    exclude group: 'org.springframework.boot', module: 'logback-classic'
+    exclude group: 'javax.ws.rs', module: 'jsr311-api'
+}
+
+springBoot {
+    mainClass = "com.bluejeans.microservice.ServiceLauncher"
+}
+
+dependencies {
+
+	compile "org.springframework.boot:spring-boot-starter-jersey"
+	compile "org.springframework.boot:spring-boot-starter-web"
+    compile "org.springframework.boot:spring-boot-starter-jetty"
+    
+    compile "org.springframework.cloud:spring-cloud-starter-consul-all:1.2.1.RELEASE"
+    compile "org.springframework.boot:spring-boot-starter-log4j2"
+    compile "org.springframework.boot:spring-boot-starter-actuator"
+    compile "org.springframework.cloud:spring-cloud-starter-feign:1.2.5.RELEASE"
+    compile("io.github.openfeign:feign-jaxrs:${feignVersion}")
+	compile "io.github.openfeign:feign-okhttp:${feignVersion}"
+    compile "com.netflix.hystrix:hystrix-javanica:1.5.12"
+    
+}
